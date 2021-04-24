@@ -1,0 +1,79 @@
+select distinct paymentstatus from "invoice Annisa_csv" iac;
+create table annisainvoice_udahbayar as select* from "invoice Annisa_csv" iac 
+where paymentstatus like '%uccessfull%';
+
+select* from "invoice Annisa_csv" iac 
+where "date" between '2019-01-01' and '2019-03-31';
+select* from "invoice Annisa_csv" iac 
+where "date" between '2019-10-01' and '2019-12-31';
+
+create table Annisa_awal_tahun as
+select
+	invoiceid,
+	userid,
+	paymentstatus,
+	--"date" 
+	cast ("date" as timestamp) as "date" 
+from
+	(select * from "invoice Annisa_csv" iac3 where paymentstatus like '%uccessfully%') as paymentstatus_success 
+where "date" between '2017-01-01 00:00:00' and '2017-03-31 23:59:59'
+union all
+select
+	invoiceid,
+	userid,
+	paymentstatus,
+	cast ("date" as timestamp) as "date" 
+from
+	(select	* from "invoice Annisa_csv" iac2 where paymentstatus like '%uccessfully%') as paymentstatus_success 
+where "date" between '2018-01-01 00:00:00' and '2018-03-31 23:59:59'
+union all 
+select 
+	invoiceid,
+	userid,
+	paymentstatus,
+	cast ("date" as timestamp) as "date" 
+from
+	(select	* from "invoice Annisa_csv" iac where paymentstatus like '%uccessfully%') as paymentstatus_success
+where "date" between '2019-01-01 00:00:00' and '2019-03-31 23:59:59'
+order by "date" ;
+
+select* from public.annisa_awal_tahun aat;
+create table akhir_tahun_annisa as
+select 
+	invoiceid,
+	userid,
+	paymentstatus,
+	cast ("date" as timestamp) as "date" 
+from
+	(select *from "invoice Annisa_csv" iac2 where paymentstatus like '%uccessfully%') as ric2
+where "date" between '2017-10-01 00:00:00' and '2017-12-31 23:59:59'
+union all
+select 
+	invoiceid,
+	userid,
+	paymentstatus,
+	cast ("date" as timestamp) as "date" 
+from
+	(select *from "invoice Annisa_csv" iac where paymentstatus like '%uccessfully%') as ric2
+where "date" between '2018-10-01 00:00:00' and '2018-12-31 23:59:59'
+union all
+select 
+	invoiceid,
+	userid,
+	paymentstatus,
+	cast ("date" as timestamp) as "date" 
+from
+	(select *from "invoice Annisa_csv" iac3 where paymentstatus like '%uccessfully%') as ric2
+where "date" between '2019-10-01 00:00:00' and '2019-12-31 23:59:59'
+order by "date" ;
+
+
+
+
+***belum bayar**
+create table annisa_awaltahunbelumbayar as select invoiceid,userid,paymentstatus,cast("date"as timestamp)
+from (select*from "invoice Annisa_csv" iac
+where paymentstatus like '%Waiting%') as paymentstatus_waiting;
+
+ALTER TABLE public.annisa_awaltahunbelumbayar RENAME TO annisa_belumbayar;
+
